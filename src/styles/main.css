@@ -1,0 +1,23 @@
+@import "bulma/css/bulma.css";
+
+
+body {
+  background: #faf9ff;
+  min-height: 100vh;
+}
+
+.card {
+  box-shadow: 0 4px 15px rgba(184, 166, 255, 0.15);
+  border: 1px solid #e8e0ff;
+  transition: all 0.2s;
+}
+.card:hover {
+  box-shadow: 0 8px 25px rgba(184, 166, 255, 0.25);
+}
+
+.is-dragging {
+  opacity: 0.5;
+  transform: rotate(5deg);
+}
+
+/*# sourceMappingURL=main.css.map */
