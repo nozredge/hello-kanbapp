@@ -1,44 +1,116 @@
 <script setup lang="ts">
+import { ref } from "vue";
 import KanbanCard from "./KanbanCard.vue";
 
 const props = defineProps<{
-    title: string,
-    cards: { title: string; description: string }[]
-}>()
+    column: { id: string; title: string };
+    cards: { id: string; content: string }[];
+}>();
 
-const onDrop = (e: DragEvent) => {
-    e.preventDefault()
+const emit = defineEmits<{
+    (e: "drop", event: DragEvent, columnId: string): void;
+    (e: "dragover", event: DragEvent): void;
+    (e: "add-card", content: string): void;
+}>();
 
-    const cardTitle = e.dataTransfer?.getData("cardId")
-    if (cardTitle) {
-        console.log('Soltaste la tarjeta:', cardTitle, 'en la columna:', props.title)
+const isAdding = ref(false);
+const newTask = ref("");
+
+const addTask = () => {
+    const text = newTask.value.trim();
+    if (text) {
+        // El camarero grita "add-card" para llamar la atención
+        // y le pasa "text"
+        emit("add-card", text);
+        newTask.value = "";
+        isAdding.value = true;
     }
-
-}
-
-const onDragOver = (e: DragEvent) => {
-    e.preventDefault()
-}
+};
 </script>
 
-
 <template>
-    <div class="column is-one-third-widescreen is-full-mobile">
-        <div class="box-has-background-white-ter" style="min-height: 500px; border-radius: 12px;" @drop="onDrop"
-            @dragover="onDragOver">
+    <div class="columns">
+        <div class="column">
+            <div
+                class="is-flex is-flex-direction-column is-justify-content-space-around box has-background-white-ter"
+                style="
+                    /* min-height: 30vh;
+                    min-width: 20vw; */
+                    border-radius: 16px;
+                    border: 3px solid transparent;
+                "
+                :style="{
+                    borderColor:
+                        props.column.id === 'todo'
+                            ? '#b8a6ff'
+                            : props.column.id === 'doing'
+                            ? '#a0d8ef'
+                            : '#b5e2b2',
+                }"
+                @drop="emit('drop', $event, props.column.id)"
+                @dragover="emit('dragover', $event)"
+            >
+                <h3
+                    class="title is-4 has-text-centered mb-5"
+                    :class="{
+                        'has-text-primary': props.column.id === 'todo',
+                        'has-text-info': props.column.id === 'doing',
+                        'has-text-success': props.column.id === 'done',
+                    }"
+                >
+                    {{ props.column.title }}
+                    <span class="tag is-rounded ml-2">
+                        {{ props.cards.length }}</span
+                    >
+                </h3>
+                <!-- Cards list -->
+                <div class="mb-5">
+                    <KanbanCard
+                        v-for="card in props.cards"
+                        :key="card.id"
+                        :card="card"
+                    />
+                </div>
 
-            <h3 class="title is-4 has-text-centered mb-4 has-text-primary">
-                {{ title }}
-            </h3>
+                <!-- input inline o boton -->
+                <div v-if="isAdding">
+                    <div class="field">
+                        <div class="control">
+                            <textarea
+                                class="textarea is-small has-fixed-size"
+                                rows="2"
+                                placeholder="Escribe tu tarea..."
+                                v-model="newTask"
+                                @keyup.enter.ctrl="addTask"
+                                @blur="addTask"
+                                autofocus
+                            ></textarea>
+                        </div>
+                    </div>
+                    <div class="buttons is-right">
+                        <button
+                            class="button is-small"
+                            @click="isAdding = false"
+                        >
+                            Cancelar
+                        </button>
+                        <button
+                            class="button is-primary is-small"
+                            @click="addTask"
+                        >
+                            Añadir
+                        </button>
+                    </div>
+                </div>
 
-            <div class="mb-4">
-                <KanbanCard v-for="card in cards" :key="card.title" :title="card.title"
-                    :description="card.description" />
+                <button
+                    v-else
+                    class="button is-fullwidth is-outlined is-primary has-text-weight-bold mt-3"
+                    @click="isAdding = true"
+                >
+                    + Añadir tarea
+                </button>
             </div>
-
-            <button class="button is-small is-primary is-outlined is-fullwidth">
-                +Add card
-            </button>
         </div>
     </div>
 </template>
