@@ -14,6 +14,10 @@ const onDragEnd = (e: DragEvent) => {
     const target = e.target as HTMLElement;
     target.classList.remove("is-dragging");
 };
+
+const emit = defineEmits<{
+    (e: "delete", cardId: string): void;
+}>();
 </script>
 
 <template>
@@ -27,6 +31,11 @@ const onDragEnd = (e: DragEvent) => {
             <p class="title is-5 has-text-grey-darker" v-if="card.content">
                 {{ card.content }}
             </p>
+            <button
+                class="delete is-small"
+                style="position: absolute; top: 8px; right: 8px"
+                @click.stop="emit('delete', card.id)"
+            ></button>
         </div>
     </div>
 </template>
@@ -40,5 +49,14 @@ const onDragEnd = (e: DragEvent) => {
 
 .cursor-move {
     cursor: move;
+}
+
+.card:hover .delete {
+    opacity: 1;
+}
+
+.delete {
+    opacity: 0;
+    transition: opacity 0.2s;
 }
 </style>

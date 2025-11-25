@@ -2,6 +2,9 @@
 import { ref } from "vue";
 import KanbanCard from "./KanbanCard.vue";
 
+const isAdding = ref(false);
+const newTask = ref("");
+
 const props = defineProps<{
     column: { id: string; title: string };
     cards: { id: string; content: string }[];
@@ -11,10 +14,8 @@ const emit = defineEmits<{
     (e: "drop", event: DragEvent, columnId: string): void;
     (e: "dragover", event: DragEvent): void;
     (e: "add-card", content: string): void;
+    (e: "delete-card", cardId: string): void;
 }>();
-
-const isAdding = ref(false);
-const newTask = ref("");
 
 const addTask = () => {
     const text = newTask.value.trim();
@@ -23,8 +24,8 @@ const addTask = () => {
         // y le pasa "text"
         emit("add-card", text);
         newTask.value = "";
-        isAdding.value = true;
     }
+    isAdding.value = true;
 };
 </script>
 
@@ -69,6 +70,7 @@ const addTask = () => {
                         v-for="card in props.cards"
                         :key="card.id"
                         :card="card"
+                        @delete="emit('delete-card', $event)"
                     />
                 </div>
 
@@ -82,7 +84,6 @@ const addTask = () => {
                                 placeholder="Escribe tu tarea..."
                                 v-model="newTask"
                                 @keyup.enter.ctrl="addTask"
-                                @blur="addTask"
                                 autofocus
                             ></textarea>
                         </div>
@@ -90,7 +91,10 @@ const addTask = () => {
                     <div class="buttons is-right">
                         <button
                             class="button is-small"
-                            @click="isAdding = false"
+                            @click="
+                                isAdding = false;
+                                newTask = '';
+                            "
                         >
                             Cancelar
                         </button>

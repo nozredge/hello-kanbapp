@@ -43,51 +43,22 @@ const onDragOver = (e: DragEvent) => {
     e.preventDefault();
 };
 
-// const saveToLocalStorage = () => {
-//     localStorage.setItem("kanbapp-cards", JSON.stringify(cards.value));
-// };
-
-// const loadFromLocalStorage = () => {
-//     const saved = localStorage.getItem("kanbapp-cards");
-//     if (saved) {
-//         cards.value = JSON.parse(saved);
-//     } else {
-//         cards.value = [
-//             {
-//                 id: "1",
-//                 content: "Es más fácil que React",
-//                 columnId: "todo",
-//             },
-//             {
-//                 id: "2",
-//                 content: "Y dejar al profe flipando",
-//                 columnId: "todo",
-//             },
-//             {
-//                 id: "3",
-//                 content: "Ya está quedando precioso",
-//                 columnId: "doing",
-//             },
-//         ];
-//     }
-// };
-
 onMounted(() => {
     // loadFromLocalStorage();
     cards.value = [
         {
             id: "1",
-            content: "Es más fácil que React",
+            content: "Es más fácil que React?? No sé",
             columnId: "todo",
         },
         {
             id: "2",
-            content: "Y dejar al profe flipando",
+            content: "Vue tiene sus puntos buenos",
             columnId: "todo",
         },
         {
             id: "3",
-            content: "Ya está quedando precioso",
+            content: "Ya está quedando bueno",
             columnId: "doing",
         },
     ];
@@ -101,6 +72,10 @@ const addNewCard = (content: string, columnId: string) => {
     };
 
     cards.value.push(newCard);
+};
+
+const deleteCard = (cardId: string) => {
+    cards.value = cards.value.filter((c) => c.id !== cardId);
 };
 </script>
 
@@ -131,6 +106,7 @@ const addNewCard = (content: string, columnId: string) => {
                     @drop="onDrop"
                     @dragover="onDragOver"
                     @add-card="(content) => addNewCard(content, col.id)"
+                    @delete-card="deleteCard"
                 />
             </div>
         </div>
