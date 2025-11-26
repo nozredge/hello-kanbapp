@@ -1,6 +1,7 @@
 <script setup lang="ts">
 const props = defineProps<{
     card: { id: string; content: string };
+    columnId: string;
 }>();
 
 const onDragStart = (e: DragEvent) => {
@@ -27,8 +28,18 @@ const emit = defineEmits<{
         @dragstart="onDragStart"
         @dragend="onDragEnd"
     >
-        <div class="card-content py-4">
-            <p class="title is-5 has-text-grey-darker" v-if="card.content">
+        <div
+            class="card-content py-4"
+            :style="{
+                backgroundColor:
+                    props.columnId === 'todo'
+                        ? 'hsl(171, 70%, 60%, 0.96)'
+                        : props.columnId === 'doing'
+                        ? 'hsl(204, 80%, 60%, 0.96)'
+                        : 'hsl(141, 80%, 60%, 0.96)',
+            }"
+        >
+            <p class="has-text-grey-darker" v-if="card.content">
                 {{ card.content }}
             </p>
             <button

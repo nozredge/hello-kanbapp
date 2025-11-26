@@ -30,91 +30,85 @@ const addTask = () => {
 </script>
 
 <template>
-    <div class="columns">
-        <div class="column">
-            <div
-                class="is-flex is-flex-direction-column is-justify-content-space-around box has-background-white-ter"
-                style="
-                    /* min-height: 30vh;
-                    min-width: 20vw; */
-                    border-radius: 16px;
-                    border: 3px solid transparent;
-                "
-                :style="{
-                    borderColor:
-                        props.column.id === 'todo'
-                            ? '#b8a6ff'
-                            : props.column.id === 'doing'
-                            ? '#a0d8ef'
-                            : '#b5e2b2',
+    <div
+        class="column is-one-third-tablet is-one-quarter-desktop is-full-mobile"
+    >
+        <div
+            class="box has-background-white-ter"
+            style="border-radius: 16px; border: 2px solid transparent"
+            :style="{
+                borderColor: 'rgba(165, 231, 206, 1)',
+            }"
+            @drop="emit('drop', $event, props.column.id)"
+            @dragover="emit('dragover', $event)"
+        >
+            <h4
+                class="title is-4 has-text-centered mb-5"
+                :class="{
+                    'has-text-primary': props.column.id === 'todo',
+                    'has-text-info': props.column.id === 'doing',
+                    'has-text-success': props.column.id === 'done',
                 }"
-                @drop="emit('drop', $event, props.column.id)"
-                @dragover="emit('dragover', $event)"
             >
-                <h3
-                    class="title is-4 has-text-centered mb-5"
-                    :class="{
-                        'has-text-primary': props.column.id === 'todo',
-                        'has-text-info': props.column.id === 'doing',
-                        'has-text-success': props.column.id === 'done',
-                    }"
+                {{ props.column.title }}
+                <span class="tag is-rounded ml-2">
+                    {{ props.cards.length }}</span
                 >
-                    {{ props.column.title }}
-                    <span class="tag is-rounded ml-2">
-                        {{ props.cards.length }}</span
-                    >
-                </h3>
-                <!-- Cards list -->
-                <div class="mb-5">
-                    <KanbanCard
-                        v-for="card in props.cards"
-                        :key="card.id"
-                        :card="card"
-                        @delete="emit('delete-card', $event)"
-                    />
-                </div>
-
-                <!-- input inline o boton -->
-                <div v-if="isAdding">
-                    <div class="field">
-                        <div class="control">
-                            <textarea
-                                class="textarea is-small has-fixed-size"
-                                rows="2"
-                                placeholder="Escribe tu tarea..."
-                                v-model="newTask"
-                                @keyup.enter.ctrl="addTask"
-                                autofocus
-                            ></textarea>
-                        </div>
-                    </div>
-                    <div class="buttons is-right">
-                        <button
-                            class="button is-small"
-                            @click="
-                                isAdding = false;
-                                newTask = '';
-                            "
-                        >
-                            Cancelar
-                        </button>
-                        <button
-                            class="button is-primary is-small"
-                            @click="addTask"
-                        >
-                            Añadir
-                        </button>
-                    </div>
-                </div>
-
-                <button
-                    v-else
-                    class="button is-fullwidth is-outlined is-primary has-text-weight-bold mt-3"
-                    @click="isAdding = true"
-                >
-                    + Añadir tarea
-                </button>
+            </h4>
+            <!-- Cards list -->
+            <div class="mb-5">
+                <KanbanCard
+                    v-for="card in props.cards"
+                    v-bind:key="card.id"
+                    v-bind:card="card"
+                    v-bind:column-id="props.column.id"
+                    @delete="emit('delete-card', $event)"
+                />
             </div>
+
+            <!-- input inline o boton -->
+            <div v-if="isAdding">
+                <div class="field">
+                    <div class="control">
+                        <textarea
+                            class="textarea is-small has-fixed-size"
+                            rows="2"
+                            placeholder="Escribe tu tarea..."
+                            v-model="newTask"
+                            @keyup.enter.ctrl="addTask"
+                            autofocus
+                        ></textarea>
+                    </div>
+                </div>
+                <div class="buttons is-right">
+                    <button
+                        class="button is-small"
+                        @click="
+                            isAdding = false;
+                            newTask = '';
+                        "
+                    >
+                        Cancelar
+                    </button>
+                    <button class="button is-primary is-small" @click="addTask">
+                        Añadir
+                    </button>
+                </div>
+            </div>
+
+            <button
+                v-else
+                class="button is-fullwidth is-outlined is-primary has-text-weight-bold mt-3"
+                @click="isAdding = true"
+            >
+                + Añadir tarea
+            </button>
         </div>
     </div>
 </template>
+
+<style scoped>
+.column {
+    /* max-width: 400px; */
+}
+</style>

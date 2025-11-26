@@ -48,17 +48,17 @@ onMounted(() => {
     cards.value = [
         {
             id: "1",
-            content: "Es más fácil que React?? No sé",
+            content: "Es más fácil que React??",
             columnId: "todo",
         },
         {
             id: "2",
-            content: "Vue tiene sus puntos buenos",
-            columnId: "todo",
+            content: "Terminar el prototipo",
+            columnId: "done",
         },
         {
             id: "3",
-            content: "Ya está quedando bueno",
+            content: "Ya está quedando mejor",
             columnId: "doing",
         },
     ];
@@ -80,34 +80,27 @@ const deleteCard = (cardId: string) => {
 </script>
 
 <template>
-    <section class="section pt-6">
+    <section class="section pt-6 mr-2 ml-2">
         <div class="container">
-            <h1
-                class="title has-text-centered has-text-primary"
-                style="font-size: 3rem; font-weight: 800"
-            >
+            <h3 class="title is-3 has-text-centered has-text-primary">
                 Hello KanbApp
-            </h1>
-            <p class="subtitle has-text-centered has-text-grey is-size-5 mb-6">
+            </h3>
+            <h5 class="subtitle is-5 has-text-centered has-text-grey mb-6">
                 A minimalist kanban board!
-            </p>
+            </h5>
 
-            <!-- Kanban here -->
-            <div
-                class="columns is-mobile is-multiline is-centered"
-                style="gap: 1.5rem"
-            >
-                <!-- Columns here -->
+            <div class="columns is-centered">
                 <KanbanColumn
                     v-for="col in columns"
-                    :key="col.id"
-                    :column="col"
-                    :cards="getCardsByColumn(col.id)"
+                    v-bind:key="col.id"
+                    v-bind:column="col"
+                    v-bind:cards="getCardsByColumn(col.id)"
                     @drop="onDrop"
                     @dragover="onDragOver"
                     @add-card="(content) => addNewCard(content, col.id)"
                     @delete-card="deleteCard"
                 />
+                <!-- </div> -->
             </div>
         </div>
     </section>
