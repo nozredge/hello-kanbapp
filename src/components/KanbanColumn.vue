@@ -25,7 +25,7 @@ const addTask = () => {
         emit("add-card", text);
         newTask.value = "";
     }
-    isAdding.value = true;
+    isAdding.value = false;
 };
 </script>
 
@@ -40,7 +40,8 @@ const addTask = () => {
                 borderColor: 'rgba(165, 231, 206, 1)',
             }"
             @drop="emit('drop', $event, props.column.id)"
-            @dragover="emit('dragover', $event)"
+            @dragover.prevent
+            @dragleave.prevent
         >
             <h4
                 class="title is-4 has-text-centered mb-5"
